@@ -49,4 +49,6 @@ app.get('*', function(req, res){
 initialize()
 
 // setup http server to listen on HTTP_PORT
-app.listen(HTTP_PORT, onHttpStart);
+data_Service.initialize()
+.then(() => app.listen(HTTP_PORT, () => console.log (`Listening on port ${HTTP_PORT}`)))
+.catch(err => res.json ({message: err}))
