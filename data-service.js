@@ -35,7 +35,7 @@ exports.getDepartments = () => {
 let readFiles = new Promise((resolve,reject) => {
     fs.readFile(employees_file, (err, data) => {
         if(err) reject('Unable to read file');
-        employee_Array=Json.parse(data);
+        employee_Array=JSON.parse(data);
         fs.readFile(department_file, (err, data) => {
             if (err) reject('Unable to read file');
             department_Array=JSON.parse(data);
