@@ -39,8 +39,14 @@ app.get("/departments", function(req,res){
    res.send("this is a deparment string");//departments
 });
 
+app.get('*', function(req, res){
+   res.send('Page not found 404', 404);
+});
 // add response for no matching routes
 
+//Exported Functions
+
+initialize()
 
 // setup http server to listen on HTTP_PORT
 app.listen(HTTP_PORT, onHttpStart);
