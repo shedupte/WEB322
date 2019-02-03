@@ -1,4 +1,5 @@
 const fs = require('fs');
+var exports = module.exports = {};
 
 let employees_file= 'data/employees.json';
 let departmetn_file='data/departments.json';
@@ -9,14 +10,14 @@ var employee_Array= [];
 var department_Array=[];
 
 
-getEmployees = () => {
+exports.getEmployees = () => {
     return new Promise((resolve, reject) => {
         if (employee_Array.length==0) reject ('No results returned');
         resolve(employee_Array);
     });
 }
 
-getManagers= () => {
+exports.getManagers= () => {
     return new Promise((resolve, reject) => {
         let managers = employee_Array.filter(employee => employee.isManager == true);
         if (managers == 0) reject('No results returned')
@@ -24,7 +25,7 @@ getManagers= () => {
     });
 } 
 
-getDepartments = () => {
+exports.getDepartments = () => {
     return new Promise((resolve,reject)=>{
         if(department_Array.length==0) reject('No results returned');
         resolve(department_Array);
@@ -43,6 +44,6 @@ let readFiles = new Promise((resolve,reject) => {
     });
 });
 
-initialize = () => {
+exports.initialize = () => {
     return readFiles;
 } 
