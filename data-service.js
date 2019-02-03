@@ -2,7 +2,7 @@ const fs = require('fs');
 var exports = module.exports = {};
 
 let employees_file= 'data/employees.json';
-let departmetn_file='data/departments.json';
+let department_file='data/departments.json';
 
 
 //arrays
@@ -33,7 +33,7 @@ exports.getDepartments = () => {
 }
 
 let readFiles = new Promise((resolve,reject) => {
-    fs.readFile(employee_file, (err, data) => {
+    fs.readFile(employees_file, (err, data) => {
         if(err) reject('Unable to read file');
         employee_Array=Json.parse(data);
         fs.readFile(department_file, (err, data) => {
