@@ -1,7 +1,5 @@
 const fs = require('fs');
 
-var exports = modules.exports = {}
-
 let employees_file= 'data/employees.json';
 let departmetn_file='data/departments.json';
 
@@ -11,14 +9,14 @@ var employee_Array= [];
 var department_Array=[];
 
 
-exports.getEmployees = () => {
+getEmployees = () => {
     return new Promise((resolve, reject) => {
         if (employee_Array.length==0) reject ('No results returned');
         resolve(employee_Array);
     });
 }
 
-exports.getManagers= () => {
+getManagers= () => {
     return new Promise((resolve, reject) => {
         let managers = employee_Array.filter(employee => employee.isManager == true);
         if (managers == 0) reject('No results returned')
@@ -26,7 +24,7 @@ exports.getManagers= () => {
     });
 } 
 
-exports.getDepartments = () => {
+getDepartments = () => {
     return new Promise((resolve,reject)=>{
         if(department_Array.length==0) reject('No results returned');
         resolve(department_Array);
@@ -36,7 +34,7 @@ exports.getDepartments = () => {
 let readFiles = new Promise((resolve,reject) => {
     fs.readFile(employee_file, (err, data) => {
         if(err) reject('Unable to read file');
-        employee_Array=Jason.parse(data);
+        employee_Array=Json.parse(data);
         fs.readFile(department_file, (err, data) => {
             if (err) reject('Unable to read file');
             department_Array=JSON.parse(data);
@@ -45,6 +43,6 @@ let readFiles = new Promise((resolve,reject) => {
     });
 });
 
-exports.initialize = () => {
+initialize = () => {
     return readFiles;
 } 

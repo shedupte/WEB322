@@ -24,19 +24,25 @@ app.get("/about", function(req,res){
    res.sendFile(path.join(__dirname, "views/about.html"));
 });
 
-// setup another route to listen on /about
+
 app.get("/employees", function(req,res){
-   res.send("this string for emp"); // employees
+   data_Service.getEmployees()
+   .then(data => res.json(data))
+   .catch(err => res.json({message: err})) // employees
 });
 
-// setup another route to listen on /about
+
 app.get("/managers", function(req,res){
-   res.send("this strin for manager");// managers
+   data_Service.getManagers()
+   .then(data => res.json(data))//Managers
+   .catch(err => res.json({message: err}))
 });
 
-// setup another route to listen on /about
+
 app.get("/departments", function(req,res){
-   res.send("this is a deparment string");//departments
+   data_Service.getDepartments()
+   .then(data => res.json(data))//departments
+   .catch(err => res.json({message: err}))
 });
 
 app.get('*', function(req, res){
@@ -44,9 +50,6 @@ app.get('*', function(req, res){
 });
 // add response for no matching routes
 
-//Exported Functions
-
-initialize()
 
 // setup http server to listen on HTTP_PORT
 data_Service.initialize()
