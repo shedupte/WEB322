@@ -1,3 +1,18 @@
+/************************************************************************
+*********
+*  WEB322 
+–Assignment02
+*  I declare that this assignment is my own work in accordance with Seneca  Academic Policy.  No part 
+*  of this assignment has been copied manually or electronically from any other source 
+*  (including 3rd party web sites) or distributed to other students.
+* 
+*  Name: ___Tenzin Shedup__ Student ID: __120664180____ Date: ___02/02/19______
+*
+*  Online (Heroku) Link: _____https://quiet-mesa-75926.herokuapp.com/_______
+*
+********************************************************************************/ 
+
+
 var express = require("express");
 var app = express();
 var path = require("path");
@@ -24,6 +39,16 @@ app.get("/about", function(req,res){
    res.sendFile(path.join(__dirname, "views/about.html"));
 });
 
+// setup another route to listen on /views/addemployee***
+app.get("/employees/add", function(req,res){
+   res.sendFile(path.join(__dirname, "views/addEmployee.html"));
+});
+
+// setup another route to listen on /addimage***
+app.get("/images/add", function(req,res){
+   res.sendFile(path.join(__dirname, "views/addImage.html"));
+});
+
 
 app.get("/employees", function(req,res){
    data_Service.getEmployees()
@@ -44,6 +69,7 @@ app.get("/departments", function(req,res){
    .then(data => res.json(data))//departments
    .catch(err => res.json({message: err}))
 });
+
 
 app.get('*', function(req, res){
    res.send('Page not found 404', 404);
