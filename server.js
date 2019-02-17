@@ -64,7 +64,7 @@ app.get('.employee', (req,res)=>{
 });
 //Part 2 Adding Routes/ Middleware to Support Image Uploads
 const storage = multer.diskStorage({
-   destination: "./public/images/uploaded",
+   destination: "/public/images/uploaded",
    filename: function (req, file, cb) {
      // we write the filename as the current date down to the millisecond
      // in a large web service this would possibly cause a problem if two people
@@ -77,13 +77,13 @@ const storage = multer.diskStorage({
  // tell multer to use the diskStorage function for naming files instead of the default.
  const upload = multer({ storage: storage });
 
- app.post('/images/add',upload.single("imageFile"), (req, res,next) => { ///step 2****
+ app.post('/images/add',upload.single('imageFile'), (req, res,next) => { ///step 2****
    res.redirect('/images');
  });
 //multer funciton added end******* Part 2 Step 1
 
 app.get('/images',(req,res)=> {//*********/step 3***************
-   fs.readdir('../public/images/uploaded', (err, files)=> {
+   fs.readdir('/public/images/uploaded', (err, files)=> {
       res.json({
          images: files
       });
@@ -116,7 +116,7 @@ app.get("/employees/add", function(req,res){
 
 // setup another route to listen on /addimage***
 app.get("/images/add", function(req,res){
-   res.sendFile(path.join(__dirname, "views/addImage.html"));
+   res.sendFile(path.join(__dirname +  "/views/addImage.html"));
 });
 
 
