@@ -8,7 +8,66 @@ let department_file='data/departments.json';
 //arrays
 var employee_Array= [];
 var department_Array=[];
+//********************Part3 Adding Employee********************
+exports.addEmployee=(employeeData) =>{
+    return new Promise((resolve,reject) => {
+    if (!employeeData.isManager){
+        employeeData.isManager=false;
+    }
+    else{
+        employeeData.isManager=true;
+    }
+    employeeData.employeeNum= employee_Array.length + 1;
+    employee_Array.push(employeeData);
 
+    resolve('New Employee Added');
+});
+}
+//*****PART 5 Updating "data- service.js" to support the new Employee routes */
+exports.getEmployeesByStatus = (status) => {
+    return new Promise((resolve, reject) => {
+        console.log('getEmployeesByStatus: ${status}');
+        let emp = employee_Array.filter(employee=>{
+            if(status.localCompare(employee.status)==0)
+            return employee;
+        });
+        if (emp.length>0) resolve(emp);
+        else reject('No results returned');
+    });
+}
+
+exports.getEmployeesByDepartment = (department) => {
+    return new Promise((resolve, reject) => {
+        console.log('getEmployeesByDepartmetn: ${department}');
+        let emp = employee_Array.filter(employee=>{
+            if(department.localCompare(employee.department)==0)
+            return employee;
+        });
+        if (emp.length>0) resolve(emp);
+        else reject('No results returned');
+    });
+}
+
+exports.getEmployeesByManager = (manager) => {
+    return new Promise((resolve, reject) => {
+        console.log('getEmployeesByManager: ${Manager}');
+        let emp = employee_Array.filter(employee=>{
+            if(manager.localCompare(employee.Manager)==0)
+            return employee;
+        });
+        if (emp.length>0) resolve(emp);
+        else reject('No results returned');
+    });
+}
+
+exports.getEmployeesByNum = (num) => {
+    return new Promise((resolve, reject) => {
+        console.log('getEmployeesByNum: ${num}');
+        let emp = employee_Array.filter(employee=> employee.employeeNum == num);
+        if (emp.length>0) resolve(emp);
+        else reject('No results returned');
+    });
+}
 
 exports.getEmployees = () => {
     return new Promise((resolve, reject) => {

@@ -14,11 +14,81 @@
 
 
 var express = require("express");
-var app = express();
+var multer= require("multer");
+var bodyParser = require("body-parser");
+const fs = require('fs');
+var app = express();//***Part 3 Step 3*** 
 var path = require("path");
 var data_Service= require("./data-service");
 
 var HTTP_PORT = process.env.PORT || 8080;
+
+//Part 3: Adding Routes/ middleware to support adding employees**********
+app.use(bodyParser.urlencoded({extended: true}));
+
+app.post('/employees/add', (req, res) => { ///step 2****
+   let employeeToAdd= req.body;
+   data_Service.addEmployee(employeeToAdd)
+      .then(()=> res.redirect('/employees'));
+ });
+
+app.get('/employee/:value', (req,res)=>{
+   data_Service.getEmployeesByNum(req.params.value)
+   .then(employees=> res.json(employees))
+   .catch(err => console.log(err));
+});
+
+app.get('.employee', (req,res)=>{
+   
+   if(req.query.status){
+      data_Service.getEmployeeByStatus(req.query.status)
+     .then(employees => res.json(employees))
+     .catch(err => console.log(err));
+   }
+   else if(req.query.department){
+      data_Service.getEmployeeByDepartment(req.query.department)
+     .then(employees => res.json(employees))
+     .catch(err => console.log(err));
+   }
+   else if(req.query.manager){
+      data_Service.getEmployeeByManager(req.query.manager)
+     .then(employees => res.json(employees))
+     .catch(err => console.log(err));
+   }
+   else{
+      data_Service.getAllEmployees()
+      .then(data => res.json(data))
+      .catch(err => res.log({message: err}))
+   }
+
+});
+//Part 2 Adding Routes/ Middleware to Support Image Uploads
+const storage = multer.diskStorage({
+   destination: "./public/images/uploaded",
+   filename: function (req, file, cb) {
+     // we write the filename as the current date down to the millisecond
+     // in a large web service this would possibly cause a problem if two people
+     // uploaded an image at the exact same time. A better way would be to use GUID's for filenames.
+     // this is a simple example.
+     cb(null, Date.now() + path.extname(file.originalname));
+   }
+ });
+ 
+ // tell multer to use the diskStorage function for naming files instead of the default.
+ const upload = multer({ storage: storage });
+
+ app.post('/images/add',upload.single("imageFile"), (req, res,next) => { ///step 2****
+   res.redirect('/images');
+ });
+//multer funciton added end******* Part 2 Step 1
+
+app.get('/images',(req,res)=> {//*********/step 3***************
+   fs.readdir('../public/images/uploaded', (err, files)=> {
+      res.json({
+         images: files
+      });
+   });
+});
 
 // call this function after the http server starts listening for requests
 function onHttpStart() {
