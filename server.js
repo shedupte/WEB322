@@ -6,13 +6,13 @@
 *  of this assignment has been copied manually or electronically from any other source 
 *  (including 3rd party web sites) or distributed to other students.
 * 
-*  Name: ___Tenzin Shedup__ Student ID: __120664180____ Date: ___02/02/19______
+*  Name: ___Tenzin Shedup__ Student ID: __120664180____ Date: ___03/08/19______
 *
 *  Online (Heroku) Link: _____https://quiet-mesa-75926.herokuapp.com/_______
 *
 ********************************************************************************/ 
 
-
+const exphbs = require('express-handlebars'); 
 var express = require("express");
 var multer= require("multer");
 var bodyParser = require("body-parser");
@@ -22,6 +22,10 @@ var path = require("path");
 var data_Service= require("./data-service");
 
 var HTTP_PORT = process.env.PORT || 8080;
+
+//Part 4: Getting express Handlebars & Updating your views
+app.engine('.hbs', exphbs({ extname: '.hbs'}));
+app.set('view engine', '.hbs'); 
 
 //Part 3: Adding Routes/ middleware to support adding employees**********
 app.use(bodyParser.urlencoded({extended: true}));
@@ -38,7 +42,7 @@ app.get('/employee/:value', (req,res)=>{
    .catch(err => console.log(err));
 });
 
-app.get('.employee', (req,res)=>{
+app.get('/employee', (req,res)=>{
    
    if(req.query.status){
       data_Service.getEmployeeByStatus(req.query.status)
@@ -99,24 +103,24 @@ app.use(express.static('public'));
 
 // setup a 'route' to listen on the default url path (http://localhost)
 app.get("/", function(req,res){
-   res.sendFile(path.join(__dirname, "views/home.html"));
+   res.render("home");// step 2 double check this step
 });
 
 
 
 // setup another route to listen on /about
-app.get("/about", function(req,res){
-   res.sendFile(path.join(__dirname, "views/about.html"));
+app.get("/about", function(req,res){ //step 3 updating html to hbs
+   res.render("about");
 });
 
 // setup another route to listen on /views/addemployee***
 app.get("/employees/add", function(req,res){
-   res.sendFile(path.join(__dirname, "views/addEmployee.html"));
+   res.render("addEmployee");
 });
 
 // setup another route to listen on /addimage***
 app.get("/images/add", function(req,res){
-   res.sendFile(path.join(__dirname +  "/views/addImage.html"));
+   res.render("addImage");
 });
 
 
@@ -142,7 +146,7 @@ app.get("/departments", function(req,res){
 
 
 app.get('*', function(req, res){
-   res.send('Page not found 404', 404);
+   res.status(404).send("page not found");
 });
 // add response for no matching routes
 
