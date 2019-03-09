@@ -19,7 +19,7 @@ var app = express();//***Part 3 Step 3***
 var path = require("path");
 var data_Service = require("./data-service");
 
-var HTTP_PORT = process.env.PORT || 8080;
+var PORT = process.env.PORT || 8080;
 
 //Part 4: Getting express Handlebars & Updating your views
 app.engine('.hbs', exphbs({
@@ -122,7 +122,7 @@ app.get('/images', (req, res) => {//*********/step 3***************
 
 // call this function after the http server starts listening for requests
 function onHttpStart() {
-   console.log("Express http server listening on: " + HTTP_PORT);
+   console.log("Express http server listening on: " + PORT);
 }
 
 app.use(express.static('public'));
@@ -175,7 +175,7 @@ app.get('*', function (req, res) {
 // add response for no matching routes
 
 
-// setup http server to listen on HTTP_PORT
+// setup http server to listen on PORT
 data_Service.initialize()
-   .then(() => app.listen(HTTP_PORT, () => console.log(`Listening on port ${HTTP_PORT}`)))
+   .then(() => app.listen(PORT, () => console.log(`Listening on port ${PORT}`)))
    .catch(err => console.log({ message: err }))
