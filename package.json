@@ -5,7 +5,7 @@
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+    "start": "nodemon server.js"
   },
   "author": "Tenzin Shedup",
   "license": "ISC",
@@ -13,6 +13,8 @@
     "body-parser": "^1.18.3",
     "express": "^4.16.4",
     "express-handlebars": "^3.0.2",
-    "multer": "^1.4.1"
-  }
+    "multer": "^1.4.1",
+    "nodemon": "^1.18.10"
+  },
+  "devDependencies": {}
 }
