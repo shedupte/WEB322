@@ -93,7 +93,7 @@ app.get('/employees', (req, res) => {
 });
 //Part 2 Adding Routes/ Middleware to Support Image Uploads
 const storage = multer.diskStorage({
-   destination: "/public/images/uploaded",
+   destination: "app/public/images/uploaded",
    filename: function (req, file, cb) {
       // we write the filename as the current date down to the millisecond
       // in a large web service this would possibly cause a problem if two people
