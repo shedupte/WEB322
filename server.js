@@ -234,4 +234,4 @@ app.get('/departmetns/:departmentId', (req, res) => {
 
 data_Service.initialize()
     .then(() => app.listen(PORT, () => console.log(`Listening on port ${PORT}`)))
-.catch(err => res.json({ message: err}))
+      .catch(err => res.json({ message: err}))

@@ -208,7 +208,8 @@ exports.getDepartmentById = (id) => {
 exports.initialize = () => {
   return new Promise(function (resolve, reject) {
     sequelize.sync()
-      .then(() => resolve("success")
-        .catch(() => reject("unable to sync the database")))
+      .then(Employee => resolve("Employee model"))
+       .then(Department=> resolve("Department model"))
+        .catch(err => reject("unable to sync the database"));
   });
 }
