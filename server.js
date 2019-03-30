@@ -118,13 +118,13 @@ app.get('/employees', (req, res) => {
 
 });
 
-router.get('/employees/delete/:empNum', (req, res) => {
+app.get('/employees/delete/:empNum', (req, res) => {
    dataService.deleteEmployeeByNum(req.params.empNum)
      .then(data => res.redirect('/employees'))
      .catch(err =>  res.status(500).send('Unable to Remove Employee / Employee not found'))
  })
 
- 
+
 //Part 2 Adding Routes/ Middleware to Support Image Uploads
 const storage = multer.diskStorage({
    destination: "app/public/images/uploaded",
@@ -231,3 +231,7 @@ app.get('/departmetns/:departmentId', (req, res) => {
       .then(departments => res.render('department', { department: departments }))
       .catch(err => res.render('department', { message: 'Department Not Found' }));
 });
+
+data_Service.initialize()
+    .then(() => app.listen(PORT, () => console.log(`Listening on port ${PORT}`)))
+.catch(err => res.json({ message: err}))
