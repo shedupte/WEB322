@@ -201,18 +201,14 @@ app.get("/employees", function (req, res) {
 
 app.get("/departments", function (req, res) {
    data_Service.getDepartments()
-      .then(data => res.render('departments', { data: data }))
+      .then(data => res.render('departmentList', { departments: data }))
       .catch(err => res.render({ message: err }))
 });
 
-
-app.get('*', function (req, res) {
-   res.status(404).send("page not found");
-});
 // add response for no matching routes
 
 app.get("/departments/add", function (req, res) {
-   res.render("addDepartments");
+   res.render("addDepartment");
 });
 
 app.post('/departments/add', (req, res) => { ///step 2****
@@ -229,10 +225,13 @@ app.post("/departments/update", (req, res) => {
 });
 
 //@@@@@@@@@@@ Double check this @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-app.get('/departmetns/:departmentId', (req, res) => {
+app.get('/departments/:departmentId', (req, res) => {
    data_Service.getEmployeesById(req.params.value)
       .then(departments => res.render('department', { department: departments }))
       .catch(err => res.render('department', { message: 'Department Not Found' }));
+});
+app.get('*', function (req, res) {
+   res.status(404).send("page not found");
 });
 
 data_Service.initialize()

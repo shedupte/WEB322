@@ -153,8 +153,9 @@ exports.getManagers = () => {
 exports.getDepartments = () => {
   return new Promise(function (resolve, reject) {
     Department.findAll()
-      .then(data => {
-        resolve(data);
+      .then(departments => {
+        console.log(departments)
+        resolve(departments)
       })
       .catch(err => reject(err));
   });
@@ -179,9 +180,9 @@ exports.addDepartment = (departmentData) => {
         departmentData[i] = null;
       }
     }
-    department.create({ where: { departmentData: departmentID } })//********************* */
+    Department.create(departmentData)//********************* */
       .then((department) => resolve(department))
-      .catch(() => reject("Unable to create department"))
+      .catch((err) => reject(err))
 
   });
 }
