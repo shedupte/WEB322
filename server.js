@@ -114,14 +114,17 @@ app.get('/employees', (req, res) => {
    else
       data_Service.getAllEmployees()
          .then(data => res.render('employees', { data: data }))
-         .catch(err => res.render({ message: err }))
+         .catch(err => res.json({ message: err }))
 
 });
 
 app.get('/employees/delete/:empNum', (req, res) => {
-   dataService.deleteEmployeeByNum(req.params.empNum)
+   data_Service.deleteEmployeeByNum(req.params.empNum)
      .then(data => res.redirect('/employees'))
-     .catch(err =>  res.status(500).send('Unable to Remove Employee / Employee not found'))
+     .catch(err => {
+         console.log(err)
+         res.status(500).send(err)
+     })
  })
 
 

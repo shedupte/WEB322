@@ -52,13 +52,13 @@ var Department = sequelize.define('Department', {
 //********************Part3 Adding Employee********************
 exports.addEmployee = (employeeData) => {
   return new Promise(function (resolve, reject) {
-    employeeData.isManager(employeeData.isManager) ? true : false;
+    employeeData.isManager = (employeeData.isManager) ? true : false;
     for (let i in employeeData) {
       if (employeeData[i] == "") {
         employeeData[i] = null;
       }
     }
-    Employee.create({ where: { employeeData: employeeNum } })//********************* */
+    Employee.create(employeeData)//********************* */
       .then((employees) => resolve(employees))
       .catch(() => reject("no results returned"))
 
@@ -68,7 +68,7 @@ exports.addEmployee = (employeeData) => {
 exports.getAllEmployees = () => {
   return new Promise(function (resolve, reject) {
     Employee.findAll()
-      .then(() => resolve(employees))
+      .then((employees) => resolve(employees))
       .catch(() => reject("no results returned"))
   });
 }
@@ -132,8 +132,12 @@ exports.updateEmployee = (employeeData) => {
 
 exports.deleteEmployeeByNum = employeeNum => {
   return new Promise((resolve, reject) => {
-    Employee.destory({ where: { employeeNum: employeeNum } })
-      .then(data => resolve("Deleted"))
+    Employee.destroy({ 
+      where: { 
+        employeeNum: employeeNum 
+      } 
+    })
+      .then(data => resolve(data))
       .catch(err => reject(err))
   });
 }
