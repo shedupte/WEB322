@@ -4,7 +4,7 @@
 *  of this assignment has been copied manually or electronically from any other source 
 *  (including 3rd party web sites) or distributed to other students.
 * 
-*  Name: ___Tenzin Shedup__ Student ID: __120664180____ Date: ___03/08/19______
+*  Name: ___Tenzin Shedup__ Student ID: __120664180____ Date: ___03/29/19______
 *
 *  Online (Heroku) Link: _____https://quiet-mesa-75926.herokuapp.com/_______
 *
@@ -52,17 +52,43 @@ app.use(function (req, res, next) {
    app.locals.activeRoute = (route == "/") ? "/" : route.replace(/\/$/, "");
    next();
 });
-
+//*********MODIFY THIS FOR A5********/
 app.post('/employees/add', (req, res) => { ///step 2****
    let employeeToAdd = req.body;
    data_Service.addEmployee(employeeToAdd)
       .then(() => res.redirect('/employees'));
 });
 
-app.get('/employee/:value', (req, res) => {
-   data_Service.getEmployeesByNum(req.params.value)
-      .then(employees => res.render('employee', { employee: employees }))
-      .catch(err => res.render('employee', { message: 'no results' }));
+//*********Double check if THIS FOR A5********/
+
+app.get("/employee/:empNum", (req, res) => {
+   // initialize an empty object to store the values
+   let viewData = {};
+   dataService.getEmployeeByNum(req.params.empNum)
+      .then((data) => {
+         viewData.data = data; //store employee data in the "viewData" object as "data"
+      }).catch(() => {
+         viewData.data = null; // set employee to null if there was an error
+      }).then(dataService.getDepartments)
+      .then((data) => {
+         viewData.departments = data; // store department data in the "viewData" object as "departments"
+         // loop through viewData.departments and once we have found the departmentId that matches
+         // the employee's "department" value, add a "selected" property to the matching
+         // viewData.departments object
+         for (let i = 0; i < viewData.departments.length; i++) {
+            if (viewData.departments[i].departmentId == viewData.data.department) {
+               viewData.departments[i].selected = true;
+            }
+         }
+      }).catch(() => {
+         viewData.departments = []; // set departments to empty if there was an error
+      }).then(() => {
+         if (viewData.data == null) { // if no employee - return an error
+            res.status(404).send("Employee Not Found");
+         } else {
+            res.render("employee", { viewData: viewData }); // render the "employee" view
+         }
+      });
 });
 
 app.post("/employee/update", (req, res) => {
@@ -74,23 +100,31 @@ app.post("/employee/update", (req, res) => {
 
 app.get('/employees', (req, res) => {
    if (req.query.status)
-        data_Service.getEmployeesByStatus(req.query.status)
-            .then(employees => res.render('employees', { data: employees }))
-            .catch(err => res.render({ message: err }));
-    else if (req.query.department)
-        data_Service.getEmployeesByDepartment(req.query.department)
-        .then(employees => res.render('employees', { data: employees }))
-      //   .catch(err => res.render({ message: err }));
-    else if (req.query.manager)
-        data_Service.getEmployeesByManager(req.query.manager)
-        .then(employees => res.render('employees', { data: employees }))
-        .catch(err => res.render({ message: err }));
-    else 
-        data_Service.getAllEmployees()
-        .then(data => res.render('employees', { data: data }))
-        .catch(err => res.render({ message: err}))
+      data_Service.getEmployeesByStatus(req.query.status)
+         .then(employees => res.render('employees', { data: employees }))
+         .catch(err => res.render({ message: err }));
+   else if (req.query.department)
+      data_Service.getEmployeesByDepartment(req.query.department)
+         .then(employees => res.render('employees', { data: employees }))
+   //   .catch(err => res.render({ message: err }));
+   else if (req.query.manager)
+      data_Service.getEmployeesByManager(req.query.manager)
+         .then(employees => res.render('employees', { data: employees }))
+         .catch(err => res.render({ message: err }));
+   else
+      data_Service.getAllEmployees()
+         .then(data => res.render('employees', { data: data }))
+         .catch(err => res.render({ message: err }))
 
 });
+
+router.get('/employees/delete/:empNum', (req, res) => {
+   dataService.deleteEmployeeByNum(req.params.empNum)
+     .then(data => res.redirect('/employees'))
+     .catch(err =>  res.status(500).send('Unable to Remove Employee / Employee not found'))
+ })
+
+ 
 //Part 2 Adding Routes/ Middleware to Support Image Uploads
 const storage = multer.diskStorage({
    destination: "app/public/images/uploaded",
@@ -174,8 +208,26 @@ app.get('*', function (req, res) {
 });
 // add response for no matching routes
 
+app.get("/departments/add", function (req, res) {
+   res.render("addDepartments");
+});
 
-// setup http server to listen on PORT
-data_Service.initialize()
-   .then(() => app.listen(PORT, () => console.log(`Listening on port ${PORT}`)))
-   .catch(err => console.log({ message: err }))
+app.post('/departments/add', (req, res) => { ///step 2****
+   let departmentToAdd = req.body;
+   data_Service.addDepartment(departmentToAdd)
+      .then(() => res.redirect('/departments'));
+});
+
+app.post("/departments/update", (req, res) => {
+   console.log(req.body);
+   data_Service.updateDepartment(req.body)
+      .then(() => res.redirect('/departments'))
+      .catch(err => console.log(err))
+});
+
+//@@@@@@@@@@@ Double check this @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+app.get('/departmetns/:departmentId', (req, res) => {
+   data_Service.getEmployeesById(req.params.value)
+      .then(departments => res.render('department', { department: departments }))
+      .catch(err => res.render('department', { message: 'Department Not Found' }));
+});
