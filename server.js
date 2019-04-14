@@ -18,9 +18,9 @@ const fs = require('fs');
 var app = express();//***Part 3 Step 3*** 
 var path = require("path");
 var data_Service = require("./data-service");
-var dataServiceAuth= require("./data-service-auth")
+var dataServiceAuth = require("./data-service-auth")
 
-const clientSessions=require('client-sessions');
+const clientSessions = require('client-sessions');
 
 // Register handlerbars as the rendering engine for views
 app.engine(".hbs", exphbs({ extname: ".hbs" }));
@@ -32,19 +32,84 @@ app.use(express.static("static"));
 
 // Setup client-sessions
 app.use(clientSessions({
-  cookieName: "session", // this is the object name that will be added to 'req'
-  secret: "Webassignment6", // this should be a long un-guessable string.
-  duration: 2 * 60 * 1000, // duration of the session in milliseconds (2 minutes)
-  activeDuration: 1000 * 60 // the session will be extended by this many ms each request (1 minute)
+   cookieName: "session", // this is the object name that will be added to 'req'
+   secret: "Webassignment6", // this should be a long un-guessable string.
+   duration: 2 * 60 * 1000, // duration of the session in milliseconds (2 minutes)
+   activeDuration: 1000 * 60 // the session will be extended by this many ms each request (1 minute)
 }));
 
 // Parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }));
 
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
    res.locals.session = req.session;
    next();
-   });
+});
+
+// An authenticated route that requires the user to be logged in.
+// Notice the middleware 'ensureLogin' that comes before the function
+// that renders the dashboard page
+app.get("/dashboard", ensureLogin, (req, res) => {
+   res.render("dashboard", {user: req.session.user});
+ });
+
+ // This is a helper middleware function that checks if a user is logged in
+// we can use it in any route that we want to protect against unauthenticated access.
+// A more advanced version of this would include checks for authorization as well after
+// checking if the user is authenticated
+function ensureLogin(req, res, next) {
+   if (!req.session.user) {
+     res.redirect("/login");
+   } else {
+     next();
+   }
+ }
+
+app.get('/login', (req, res) => {
+   res.render('login');
+});
+
+app.get('/register', (req, res) => {
+   res.render('register');
+});
+
+app.post('/register', (req, res) => {
+   dataServiceAuth.registerUser(req.body)
+      .then(() => res.render('register', { successMessage: 'User created' }))
+      .catch(err => res.render('register', { errorMessage: err, userName: req.body.userName }));
+});
+
+app.post('/login', (req, res) => {
+   req.body.userAgent = req.get('User-Agent');
+   dataServiceAuth.checkUser(req.body)
+      .then(user => {
+         req.session.user = {
+            userName: user.userName,
+            email: user.email,
+            loginHistory: user.loginHistory
+         }
+         res.redirect('/employees');
+      })
+      .catch(err => {
+         res.render('login', { errorMessage: err, userName: req.body.userName });
+      });
+});
+
+app.get('/logout', (req, res) => {
+   req.session.reset();
+   res.redirect('/');
+});
+
+app.get('/userHistory', ensureLogin, (req, res) => {
+   res.render('userHistory')
+});
+
+app.get("*", (req, res) => {
+   res.status(`The page does not exist`);
+   res.sendStatus(404);
+});
+
+
 
 
 
@@ -149,12 +214,12 @@ app.get('/employees', (req, res) => {
 
 app.get('/employees/delete/:empNum', (req, res) => {
    data_Service.deleteEmployeeByNum(req.params.empNum)
-     .then(data => res.redirect('/employees'))
-     .catch(err => {
+      .then(data => res.redirect('/employees'))
+      .catch(err => {
          console.log(err)
          res.status(500).send(err)
-     })
- })
+      })
+})
 
 
 //Part 2 Adding Routes/ Middleware to Support Image Uploads
@@ -264,5 +329,5 @@ app.get('*', function (req, res) {
 });
 
 data_Service.initialize()
-    .then(() => app.listen(PORT, () => console.log(`Listening on port ${PORT}`)))
-      .catch(err => res.json({ message: err}))
+   .then(() => app.listen(PORT, () => console.log(`Listening on port ${PORT}`)))
+   .catch(err => res.json({ message: err }))
