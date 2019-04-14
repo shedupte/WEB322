@@ -18,6 +18,35 @@ const fs = require('fs');
 var app = express();//***Part 3 Step 3*** 
 var path = require("path");
 var data_Service = require("./data-service");
+var dataServiceAuth= require("./data-service-auth")
+
+const clientSessions=require('client-sessions');
+
+// Register handlerbars as the rendering engine for views
+app.engine(".hbs", exphbs({ extname: ".hbs" }));
+app.set("view engine", ".hbs");
+
+// Setup the static folder that static resources can load from
+// like images, css files, etc.
+app.use(express.static("static"));
+
+// Setup client-sessions
+app.use(clientSessions({
+  cookieName: "session", // this is the object name that will be added to 'req'
+  secret: "Webassignment6", // this should be a long un-guessable string.
+  duration: 2 * 60 * 1000, // duration of the session in milliseconds (2 minutes)
+  activeDuration: 1000 * 60 // the session will be extended by this many ms each request (1 minute)
+}));
+
+// Parse application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({ extended: false }));
+
+app.use(function(req, res, next) {
+   res.locals.session = req.session;
+   next();
+   });
+
+
 
 var PORT = process.env.PORT || 8080;
 
