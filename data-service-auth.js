@@ -30,7 +30,7 @@ userSchema.pre('save', function (next) {
 let User = mongoose.model('User', userSchema); //to be deined on new connection 
 
 
-exports.initialize = function () {
+module.exports.initialize = function () {
     return new Promise(function (resolve, reject) {
         let db = mongoose.createConnection("connectionString");
         db.on('error', (err) => {
@@ -43,7 +43,7 @@ exports.initialize = function () {
     });
 };
 
-exports.registerUser = (userData) => {
+module.exports.registerUser = (userData) => {
     return new Promise((resolve, reject) => {
         if (userData.password !== userData.password2)
             reject('Passwords do not match');
@@ -63,7 +63,7 @@ exports.registerUser = (userData) => {
     });
 }
 
-exports.checkUser = (userData) => {
+module.exports.checkUser = (userData) => {
     return new Promise((resolve, reject) => {
         User.find({ userName: userData.username })
             .then(users => {
