@@ -104,10 +104,6 @@ app.get('/userHistory', ensureLogin, (req, res) => {
    res.render('userHistory')
 });
 
-app.get("*", (req, res) => {
-   res.status(`The page does not exist`);
-   res.sendStatus(404);
-});
 
 
 
@@ -331,3 +327,9 @@ app.get('*', function (req, res) {
 data_Service.initialize()
    .then(() => app.listen(PORT, () => console.log(`Listening on port ${PORT}`)))
    .catch(err => res.json({ message: err }))
+
+   app.get("*", (req, res) => {
+      res.status(`The page does not exist`);
+      res.sendStatus(404);
+   });
+   
